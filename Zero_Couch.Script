@@ -1,0 +1,35 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Zero Couch Angles
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: August 10, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script sets the couch angle on all beams to 0 (no couch kick). It should
+// be used when creating IMRT QA plans on phantoms that do not support measurement of couch 
+// kicks, such as the Delta4 system.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+TrialList.Current.BeamList.#"#0".Couch = "    0";
+TrialList.Current.BeamList.#"#1".Couch = "    0";
+TrialList.Current.BeamList.#"#2".Couch = "    0";
+TrialList.Current.BeamList.#"#3".Couch = "    0";
+TrialList.Current.BeamList.#"#4".Couch = "    0";
+TrialList.Current.BeamList.#"#5".Couch = "    0";
+TrialList.Current.BeamList.#"#6".Couch = "    0";
+TrialList.Current.BeamList.#"#7".Couch = "    0";
+TrialList.Current.BeamList.#"#8".Couch = "    0";
+TrialList.Current.BeamList.#"#9".Couch = "    0";
+TrialList.Current.BeamList.#"#10".Couch = "    0";
+TrialList.Current.BeamList.#"#11".Couch = "    0";
+TrialList.Current.BeamList.#"#12".Couch = "    0";
+TrialList.Current.BeamList.#"#13".Couch = "    0";
+TrialList.Current.BeamList.#"#14".Couch = "    0";
+TrialList.Current.BeamList.#"#15".Couch = "    0";
+TrialList.Current.BeamList.#"#16".Couch = "    0";
+TrialList.Current.BeamList.#"#17".Couch = "    0";
+TrialList.Current.BeamList.#"#18".Couch = "    0";
+TrialList.Current.BeamList.#"#19".Couch = "    0";
+TrialList.Current.BeamList.#"#20".Couch = "    0";

@@ -1,0 +1,20 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Fix Red MU (VMAT)
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: August 9, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script attempts to fix red MU that often appear on VMAT plans. It can
+// only be run on already optimized plans, and will set the MU to 20000, then 0, then back to
+// the optimized value.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+TrialList.Current.PrescriptionList.Current.Method = "Set Monitor Units";
+Store.FloatAt.ActualMU = TrialList.Current.PrescriptionList.Current.RequestedMonitorUnitsPerFraction;
+TrialList.Current.PrescriptionList.Current.RequestedMonitorUnitsPerFraction = 20000;
+TrialList.Current.PrescriptionList.Current.RequestedMonitorUnitsPerFraction = 0;
+TrialList.Current.PrescriptionList.Current.RequestedMonitorUnitsPerFraction = Store.FloatAt.ActualMU;
+Store.FreeAt.ActualMU = "";

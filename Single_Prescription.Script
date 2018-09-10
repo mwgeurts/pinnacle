@@ -1,0 +1,120 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Combine beams into Single Prescription Script
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: September 7, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script copies the current trial and then combines all fields into one 
+// prescription that is normalized to MU. This is useful when all fields need to be exported
+// under a single fraction group.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// Copy current trial
+CopyCurrentTrial = "Copy Current Trial";
+TrialList.Last.MakeCurrent = "";
+
+// Store current MU
+Store.FloatAt.MUa = TrialList.Current.BeamList.#"#0".MonitorUnits;
+Store.FloatAt.MUb = TrialList.Current.BeamList.#"#1".MonitorUnits;
+Store.FloatAt.MUc = TrialList.Current.BeamList.#"#2".MonitorUnits;
+Store.FloatAt.MUd = TrialList.Current.BeamList.#"#3".MonitorUnits;
+Store.FloatAt.MUe = TrialList.Current.BeamList.#"#4".MonitorUnits;
+Store.FloatAt.MUf = TrialList.Current.BeamList.#"#5".MonitorUnits;
+Store.FloatAt.MUg = TrialList.Current.BeamList.#"#6".MonitorUnits;
+Store.FloatAt.MUh = TrialList.Current.BeamList.#"#7".MonitorUnits;
+Store.FloatAt.MUi = TrialList.Current.BeamList.#"#8".MonitorUnits;
+Store.FloatAt.MUj = TrialList.Current.BeamList.#"#9".MonitorUnits;
+Store.FloatAt.MUk = TrialList.Current.BeamList.#"#10".MonitorUnits;
+Store.FloatAt.MUl = TrialList.Current.BeamList.#"#11".MonitorUnits;
+Store.FloatAt.MUm = TrialList.Current.BeamList.#"#12".MonitorUnits;
+Store.FloatAt.MUn = TrialList.Current.BeamList.#"#13".MonitorUnits;
+Store.FloatAt.MUo = TrialList.Current.BeamList.#"#14".MonitorUnits;
+Store.FloatAt.MUp = TrialList.Current.BeamList.#"#15".MonitorUnits;
+Store.FloatAt.MUq = TrialList.Current.BeamList.#"#16".MonitorUnits;
+Store.FloatAt.MUr = TrialList.Current.BeamList.#"#17".MonitorUnits;
+Store.FloatAt.MUs = TrialList.Current.BeamList.#"#18".MonitorUnits;
+Store.FloatAt.MUt = TrialList.Current.BeamList.#"#19".MonitorUnits;
+Store.FloatAt.MUu = TrialList.Current.BeamList.#"#20".MonitorUnits;
+
+// Set first prescription to MU
+TrialList.Current.PrescriptionList.#"#0".MethodInt = "1";
+
+// Move each plan to first prescription
+TrialList.Current.BeamList.#"#0".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#1".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#2".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#3".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#4".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#5".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#6".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#7".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#8".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#9".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#10".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#11".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#12".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#13".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#14".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#15".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#16".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#17".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#18".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#19".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#20".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+
+// Reset each beam MU
+TrialList.Current.SetBeamMonitorUnits.#"#0".Address = Store.FloatAt.MUa;
+TrialList.Current.SetBeamMonitorUnits.#"#1".Address = Store.FloatAt.MUb;
+TrialList.Current.SetBeamMonitorUnits.#"#2".Address = Store.FloatAt.MUc;
+TrialList.Current.SetBeamMonitorUnits.#"#3".Address = Store.FloatAt.MUd;
+TrialList.Current.SetBeamMonitorUnits.#"#4".Address = Store.FloatAt.MUe;
+TrialList.Current.SetBeamMonitorUnits.#"#5".Address = Store.FloatAt.MUf;
+TrialList.Current.SetBeamMonitorUnits.#"#6".Address = Store.FloatAt.MUg;
+TrialList.Current.SetBeamMonitorUnits.#"#7".Address = Store.FloatAt.MUh;
+TrialList.Current.SetBeamMonitorUnits.#"#8".Address = Store.FloatAt.MUi;
+TrialList.Current.SetBeamMonitorUnits.#"#9".Address = Store.FloatAt.MUj;
+TrialList.Current.SetBeamMonitorUnits.#"#10".Address = Store.FloatAt.MUk;
+TrialList.Current.SetBeamMonitorUnits.#"#11".Address = Store.FloatAt.MUl;
+TrialList.Current.SetBeamMonitorUnits.#"#12".Address = Store.FloatAt.MUm;
+TrialList.Current.SetBeamMonitorUnits.#"#13".Address = Store.FloatAt.MUn;
+TrialList.Current.SetBeamMonitorUnits.#"#14".Address = Store.FloatAt.MUo;
+TrialList.Current.SetBeamMonitorUnits.#"#15".Address = Store.FloatAt.MUp;
+TrialList.Current.SetBeamMonitorUnits.#"#16".Address = Store.FloatAt.MUq;
+TrialList.Current.SetBeamMonitorUnits.#"#17".Address = Store.FloatAt.MUr;
+TrialList.Current.SetBeamMonitorUnits.#"#18".Address = Store.FloatAt.MUs;
+TrialList.Current.SetBeamMonitorUnits.#"#19".Address = Store.FloatAt.MUt;
+TrialList.Current.SetBeamMonitorUnits.#"#20".Address = Store.FloatAt.MUu;
+
+// Delete additional prescriptions
+TrialList.Current.PrescriptionList.#"#1".Destroy = "";
+TrialList.Current.PrescriptionList.#"#2".Destroy = "";
+TrialList.Current.PrescriptionList.#"#3".Destroy = "";
+TrialList.Current.PrescriptionList.#"#4".Destroy = "";
+TrialList.Current.PrescriptionList.#"#5".Destroy = "";
+
+// Clean up
+Store.FreeAt.MUa = "";
+Store.FreeAt.MUb = "";
+Store.FreeAt.MUc = "";
+Store.FreeAt.MUd = "";
+Store.FreeAt.MUe = "";
+Store.FreeAt.MUf = "";
+Store.FreeAt.MUg= "";
+Store.FreeAt.MUh = "";
+Store.FreeAt.MUi = "";
+Store.FreeAt.MUj = "";
+Store.FreeAt.MUk = "";
+Store.FreeAt.MUl = "";
+Store.FreeAt.MUm = "";
+Store.FreeAt.MUn = "";
+Store.FreeAt.MUo = "";
+Store.FreeAt.MUp = "";
+Store.FreeAt.MUq = "";
+Store.FreeAt.MUr = "";
+Store.FreeAt.MUs = "";
+Store.FreeAt.MUt = "";
+Store.FreeAt.MUu = "";
+

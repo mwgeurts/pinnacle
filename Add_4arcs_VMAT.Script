@@ -1,0 +1,83 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Add 4 Dual-Coplanar Arc VMAT Beam Set
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: August 21, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script adds four non-coplanar VMAT arcs to the current plan, at couch 
+// angles 0, 45, and 90. Dual full arcs are at couch 0, while the other two are half arcs.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// C0a 
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C0a";
+    Machine = "TB2230601";
+    Modality = "Photons";
+    IsGantryStartStopLocked = 0;
+    SetBeamType = "Dynamic Arc";
+    GantryIsCCW = "1";
+    Gantry = 179.9;
+    GantryStop = 180;
+    Collimator = 315;
+    Couch = 0;
+};
+
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+
+// C0b 
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C0b";
+    Machine = "TB2230601";
+    Modality = "Photons";
+    IsGantryStartStopLocked = 0;
+    SetBeamType = "Dynamic Arc";
+    GantryIsCCW = "0";
+    Gantry = 180;
+    GantryStop = 179.9;
+    Collimator = 45;
+    Couch = 0;
+};
+
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+
+// C45
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C45";
+    Machine = "TB2230601";
+    Modality = "Photons";
+    IsGantryStartStopLocked = 0;
+    SetBeamType = "Dynamic Arc";
+    GantryIsCCW = "1";
+    Gantry = 179.9;
+    GantryStop = 0;
+    Collimator = 45;
+    Couch = 45;
+};
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+
+// C90
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C90";
+    Machine = "TB2230601";
+    Modality = "Photons";
+    IsGantryStartStopLocked = 0;
+    SetBeamType = "Dynamic Arc";
+    GantryIsCCW = "0";
+    Gantry = 0;
+    GantryStop = 179.9;
+    Collimator = 45;
+    Couch = 90;
+};
+
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;

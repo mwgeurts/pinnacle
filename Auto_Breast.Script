@@ -1,0 +1,203 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Auto Breast Field in Field Calculation Script
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: August 31, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script adds field in field segments to an existing set of tangent beams.
+// In order to execute, this script requires the plan to contain two tangent beams (with 
+// blocks and reasonably weighted), structures named "Target" (PTV eval), "OAR" (ipsilateral 
+// lung), and "Normal" (defined as External - 1cm expansion off Target), a prescription set 
+// to the full dose, and a dose grid.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// Define adjustable parameters
+Store.FloatAt.MaxIter = 20;              // Max iterations
+Store.FloatAt.DoseIter = 10;             // Convolution dose iteration 
+Store.FloatAt.MaxSeg = 10;               // Max number of field in field segments
+Store.FloatAt.MinSegArea = 6;            // Minimum segment area
+Store.FloatAt.MinSegMU = 3;              // Minimum segment MU
+Store.FloatAt.FractionOpen = 0.8;        // The fraction of dose that will go through open beam
+
+// Optionally allow user to edit inputs
+//WindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+//WindowList.MyStoreEditor.Unrealize = "";
+//WindowList.MyStoreEditor.IsModal = 1;
+//WindowList.MyStoreEditor.Create = "";
+
+// Copy current trial
+CopyCurrentTrial = "Copy Current Trial";
+TrialList.Last.MakeCurrent = "";
+
+// Calculate prescription
+Store.FloatAt.RxDose = TrialList.Current.PrescriptionList.Current.PrescriptionDose;
+Store.FloatAt.OpenDose = Store.FloatAt.RxDose;
+Store.At.OpenDose.Multiply = Store.FloatAt.FractionOpen;
+Store.FloatAt.FiFDose = Store.FloatAt.RxDose;
+Store.FloatAt.FractionFiF = 1;
+Store.At.FractionFiF.Subtract = Store.FloatAt.FractionOpen;
+Store.At.FiFDose.Multiply = Store.FloatAt.FractionFiF;
+Store.FloatAt.TotalDose = Store.FloatAt.RxDose;
+Store.At.TotalDose.Multiply = TrialList.Current.PrescriptionList.Current.NumberOfFractions;
+
+// Add a new prescription and set to MU
+TrialList.Current.AddPrescription = "Add";
+TrialList.Current.PrescriptionList.#"#0".PrescriptionDose = Store.FloatAt.OpenDose;
+TrialList.Current.PrescriptionList.#"#1".PrescriptionDose = Store.FloatAt.FiFDose;
+TrialList.Current.PrescriptionList.#"#1".NumberOfFractions = TrialList.Current.PrescriptionList.#"#0".NumberOfFractions;
+TrialList.Current.PrescriptionList.#"#1".NormalizationMethod = TrialList.Current.PrescriptionList.#"#0".NormalizationMethod;
+TrialList.Current.PrescriptionList.#"#1".PrescriptionRoi = TrialList.Current.PrescriptionList.#"#0".PrescriptionRoi;
+TrialList.Current.PrescriptionList.#"#1".PrescriptionPoint = TrialList.Current.PrescriptionList.#"#0".PrescriptionPoint;
+TrialList.Current.PrescriptionList.#"#1".PrescriptionPercent = TrialList.Current.PrescriptionList.#"#0".PrescriptionPercent;
+
+// Copy beams
+TrialList.Current.BeamList.#"#0".CopyBeam = "Copy Beam";
+Store.StringAt.Beam2Name = TrialList.Current.BeamList.#"#0".Name;
+Store.At.Beam2Name.AppendString = "a";
+TrialList.Current.BeamList.#"#2".Name = Store.StringAt.Beam2Name;
+TrialList.Current.BeamList.#"#2".Prescription = TrialList.Current.PrescriptionList.#"#1".Name;
+TrialList.Current.BeamList.#"#2".MachineEnergyName = "6 MV";
+TrialList.Current.BeamList.#"#2".UseMLC = 0;
+TrialList.Current.BeamList.#"#2".RemoveCurrentModifier = "Delete Current Block";
+TrialList.Current.BeamList.#"#2".UseMLC = 1;
+
+TrialList.Current.BeamList.#"#1".CopyBeam = "Copy Beam";
+Store.StringAt.Beam3Name = TrialList.Current.BeamList.#"#1".Name;
+Store.At.Beam3Name.AppendString = "a";
+TrialList.Current.BeamList.#"#3".Name = Store.StringAt.Beam3Name;
+TrialList.Current.BeamList.#"#3".Prescription = TrialList.Current.PrescriptionList.#"#1".Name;
+TrialList.Current.BeamList.#"#3".MachineEnergyName = "6 MV";
+TrialList.Current.BeamList.#"#3".UseMLC = 0;
+TrialList.Current.BeamList.#"#3".RemoveCurrentModifier = "Delete Current Block";
+TrialList.Current.BeamList.#"#3".UseMLC = 1;
+
+// Go to IMRT panel
+PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine";
+PluginManager.InversePlanningManager.ActiveWindow = WindowList.IMRT.Address;
+
+// Set iterations and stopping tolerance for initial optimization
+PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.MaxIterations = Store.FloatAt.MaxIter;
+PluginManager.InversePlanningManager.TrialList.Current.DoseIteration = Store.FloatAt.DoseIter;
+PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.OptimalityTolerance = "1e-8";
+PluginManager.InversePlanningManager.TrialList.Current.MaxDynamicSegments = Store.FloatAt.MaxSeg;
+PluginManager.InversePlanningManager.TrialList.Current.MinimumSegmentArea = Store.FloatAt.MinSegArea;
+PluginManager.InversePlanningManager.TrialList.Current.MinimumMUPerSegment = Store.FloatAt.MinSegMU;
+PluginManager.InversePlanningManager.TrialList.Current.ComputeIntermediateDose = 1;
+PluginManager.InversePlanningManager.TrialList.Current.ComputeFinalDose = 1;
+PluginManager.InversePlanningManager.TrialList.Current.FineResolutionODM = 1;
+
+// Add Target max dose objective
+Store.FloatAt.TargetMax = Store.FloatAt.TotalDose;
+Store.At.TargetMax.Multiply = 1.05;
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#0".ROIName = "Target";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#0" = "Max Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#0".Dose = Store.FloatAt.TargetMax;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#0".Weight = 100;
+
+// Add Target min dose objective
+Store.FloatAt.TargetMin = Store.FloatAt.TotalDose;
+Store.At.TargetMin.Multiply = 1.025;
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".ROIName = "Target";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#1" = "Min Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".Dose = Store.FloatAt.TargetMin;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".Weight = 20;
+
+// Add Target uniform dose objective
+Store.FloatAt.TargetUni = Store.FloatAt.TotalDose;
+Store.At.TargetUni.Multiply = 1.025;
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#2".ROIName = "Target";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#2" = "Uniform Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#2".Dose = Store.FloatAt.TargetUni;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#2".Weight = 1;
+
+// Add Normal max dose objective
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#3".ROIName = "Normal";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#3" = "Max Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#3".Dose = Store.FloatAt.TotalDose;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#3".Weight = 100;
+
+// Add Normal max DVH dose objective
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".ROIName = "Normal";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#4" = "Max DVH";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".Dose = Store.FloatAt.TotalDose;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".UserPercent = 5;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".Weight = 0.01;
+
+// Add OAR max DVH dose objective
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".ROIName = "OAR";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#5" = "Max DVH";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".Dose = 500;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".UserPercent = 10;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".Weight = 0.01;
+
+// Set optimization types 
+TrialList.Current.BeamList.#"#0".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#1".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#2".IMRTParameterType = "DMPO";
+TrialList.Current.BeamList.#"#3".IMRTParameterType = "DMPO";
+
+// Reset FIF beams
+PluginManager.InversePlanningManager.ResetBeamsForIMRT = "Reset Beams";
+
+// Run optimization
+WaitMessage = "Computing field in field segments...";
+PluginManager.InversePlanningManager.Initialize = "Start Optimization";
+
+// Clean up by removing constraints and IMRT parameters
+TrialList.Current.BeamList.#"#2".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#3".IMRTParameterType = "None";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+
+// Set prescriptions back
+Store.FloatAt.MUa = TrialList.Current.BeamList.#"#0".MonitorUnits;
+Store.FloatAt.MUb = TrialList.Current.BeamList.#"#1".MonitorUnits;
+Store.FloatAt.MUc = TrialList.Current.BeamList.#"#2".MonitorUnits;
+Store.FloatAt.MUd = TrialList.Current.BeamList.#"#3".MonitorUnits;
+TrialList.Current.PrescriptionList.#"#0".MethodInt = "1";
+TrialList.Current.BeamList.#"#2".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.BeamList.#"#3".Prescription = TrialList.Current.PrescriptionList.#"#0".Name;
+TrialList.Current.SetBeamMonitorUnits.#"#0".Address = Store.FloatAt.MUa;
+TrialList.Current.SetBeamMonitorUnits.#"#1".Address = Store.FloatAt.MUb;
+TrialList.Current.SetBeamMonitorUnits.#"#2".Address = Store.FloatAt.MUc;
+TrialList.Current.SetBeamMonitorUnits.#"#3".Address = Store.FloatAt.MUd;
+TrialList.Current.PrescriptionList.#"#0".MethodInt = "0";
+TrialList.Current.PrescriptionList.#"#0".PrescriptionDose = Store.FloatAt.RxDose;
+TrialList.Current.PrescriptionList.#"#1".Destroy = "";
+
+// Clean up
+Store.FreeAt.MaxIter = "";
+Store.FreeAt.DoseIter = "";
+Store.FreeAt.MaxSeg = "";
+Store.FreeAt.MinSegArea = "";
+Store.FreeAt.MinSegMU = "";
+Store.FreeAt.FractionOpen = "";
+Store.FreeAt.FractionFiF = "";
+Store.FreeAt.TargetMax = "";
+Store.FreeAt.TargetMin = "";
+Store.FreeAt.TargetUni = "";
+Store.FreeAt.Beam2Name = "";
+Store.FreeAt.Beam3Name = "";
+Store.FreeAt.RxDose = "";
+Store.FreeAt.OpenDose = "";
+Store.FreeAt.FiFDose = "";
+Store.FreeAt.MUa = "";
+Store.FreeAt.MUb = "";
+Store.FreeAt.MUc = "";
+Store.FreeAt.MUd = "";
+
+// Notify user
+WarningMessage = "Field in field computation completed successfully";

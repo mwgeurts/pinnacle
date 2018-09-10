@@ -1,0 +1,96 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Add 5 Arc SRS Beam Set
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: August 21, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script adds five non-coplanar stereo arcs to the current plan, at couch 
+// angles 90, 50, 10, 350, and 310.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// C90
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C90";
+    Machine = "TB2230_STEREO";
+    Modality = "Stereo";
+    IsGantryStartStopLocked = 0;
+    GantryIsCCW = "1";
+    Gantry = 160;
+    GantryStop = 20;
+    Collimator = 0;
+    Couch = 90;
+};
+
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+
+// C50
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C50";
+    Machine = "TB2230_STEREO";
+    Modality = "Stereo";
+    IsGantryStartStopLocked = 0;
+    GantryIsCCW = "0";
+    Gantry = 20;
+    GantryStop = 160;
+    Collimator = 0;
+    Couch = 50;
+};
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+
+// C10 
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C10";
+    Machine = "TB2230_STEREO";
+    Modality = "Stereo";
+    IsGantryStartStopLocked = 0;
+    GantryIsCCW = "1";
+    Gantry = 160;
+    GantryStop = 20;
+    Collimator = 0;
+    Couch = 10;
+};
+
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+
+// C350
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C350";
+    Machine = "TB2230_STEREO";
+    Modality = "Stereo";
+    IsGantryStartStopLocked = 0;
+    GantryIsCCW = "1";
+    Gantry = 340;
+    GantryStop = 200;
+    Collimator = 0;
+    Couch = 350;
+};
+
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+
+// C310
+
+TrialList.Current.BeamList.Beam = {
+    Name = "C310";
+    Machine = "TB2230_STEREO";
+    Modality = "Stereo";
+    IsGantryStartStopLocked = 0;
+    GantryIsCCW = "0";
+    Gantry = 200;
+    GantryStop = 340;
+    Collimator = 0;
+    Couch = 310;
+};
+
+TrialList.Current. BeamList.Last.MakeCurrent = "";
+TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
