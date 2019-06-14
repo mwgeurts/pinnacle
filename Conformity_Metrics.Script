@@ -57,7 +57,8 @@ RoiList.Last.Name = "tempHalfRx";
 // Create target/prescription volume intersection
 RoiList.#"*".ResetRoiExpandState = "Clear All";
 RoiList.Current = Store.StringAt.TargetName;		
-RoiList.Current.RoiExpandState = "Source"; 
+RoiList.Current.RoiExpandState = "Source";
+RoiExpandControl.ConstantPadding = "0"; 
 RoiExpandControl.CheckTargetRoi = RoiList.Current.Address;
 
 RoiList.Current = RoiList.tempRx.Name;
