@@ -1,0 +1,200 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Add Isodose Lines (5 Gy)
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: December 13, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script adds a series of absolute isodose lines based on the current 
+// prescription. The following lines are added: 107%, 100%, 95%, and then increments of 5 Gy 
+// up to 95% or 80 Gy, whichever is less.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// Store prescription dose
+Store.FloatAt.RxDose = TrialList.Current.PrescriptionList.Current.PrescriptionDose;
+Store.At.RxDose.Multiply = 0.01;
+Store.At.RxDose.Multiply = TrialList.Current.PrescriptionList.Current.NumberOfFractions;
+
+// Destroy Current Isodose Lines
+IsodoseControl.LineList.DestroyAllChildren = "";
+
+// Set Isodose Lines to Absolute
+IsodoseControl.NormalizationMode = "Absolute";
+
+// Add 107%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 1.07;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "red";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add RxDose
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.RxDose;
+IsodoseControl.LineList.Current.Color = "yellow";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 95%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.95;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "blue";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 5 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 5;
+IsodoseControl.LineList.Current.Color = "grey";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+
+// Add 10 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 10;
+IsodoseControl.LineList.Current.Color = "lavender";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 15 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 15;
+IsodoseControl.LineList.Current.Color = "orange";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 20 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 20;
+IsodoseControl.LineList.Current.Color = "skyblue";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 25 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 25;
+IsodoseControl.LineList.Current.Color = "green";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 30 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 30;
+IsodoseControl.LineList.Current.Color = "forest";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 35 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 35;
+IsodoseControl.LineList.Current.Color = "slateblue";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 40 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 40;
+IsodoseControl.LineList.Current.Color = "lightblue";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 45 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 45;
+IsodoseControl.LineList.Current.Color = "yellowgreen";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 50 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 50;
+IsodoseControl.LineList.Current.Color = "aquamarine";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 55 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 55;
+IsodoseControl.LineList.Current.Color = "teal";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 60 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 60;
+IsodoseControl.LineList.Current.Color = "brown";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 65 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 65;
+IsodoseControl.LineList.Current.Color = "olive";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 70 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 70;
+IsodoseControl.LineList.Current.Color = "tomato";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 75 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 75;
+IsodoseControl.LineList.Current.Color = "seashell";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Add 80 Gy
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = 80;
+IsodoseControl.LineList.Current.Color = "maroon";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+IF.IsodoseControl.LineList.Current.IsoValue.GREATERTHAN.Store.FloatAt.IDL.
+	THEN.IsodoseControl.LineList.Current.Destroy = "";
+	
+// Sort isodose lines
+IsodoseControl.LineList.SortBy.D.IsoValue = "Sort";
+
+// Clear temporary variables
+Store.FreeAt.RxDose = "";
+Store.FreeAt.IDL = "";

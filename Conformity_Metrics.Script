@@ -1,0 +1,200 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Compute Target Conformity Metrics
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: October 23, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script calculates several common conformity metrics based on the selected 
+// structure and prescription, described below:
+//  - Prescription coverage = fraction of target volume covered by prescription dose
+//  - RTOG target coverage = minimum dose / prescription dose
+//  - Conformity index, RTOG (CI_PITV) = 100% isodose volume / target volume
+//  - Conformity index, BrainSCAN (CI_BS) = 100% isodose volume / target volume receiving 100%
+//  - Nakamura's CI (NCI) = 100% isodose volume * target volume / (target volume receiving 100%)^2
+//  - Lomax's CI (LCI): target volume receiving 100% / 100% isodose volume
+//  - Paddick's CI (PCI): (target volume receiving 100%)^2 / (100% isodose volume * target volume)
+//  - Paddick dose gradient index (DGI) = 50% isodose volume / 100% isodose volume
+//  - Homogeneity index (HI) = maximum dose / prescription dose
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// Initialize info message
+WaitMessage = "Computing conformity metrics...";
+Store.StringAt.MessageContent = "CONFORMITY METRICS RESULT";
+Store.At.MessageContent.AppendString = "\n\n";
+
+// Store currently selected structure
+Store.StringAt.TargetName = RoiList.Current.Name;
+Store.At.MessageContent.AppendString = "Target Name\t=   ";
+Store.At.MessageContent.AppendString = Store.StringAt.TargetName;
+Store.At.MessageContent.AppendString = "\n";
+
+// Temporarily change isodose normalization 
+Store.StringAt.CurrentNormalization = IsodoseControl.NormalizationMode;
+IsodoseControl.NormalizationMode = "Absolute";
+
+// Create prescription isodose volume
+Store.FloatAt.RxDose = TrialList.Current.PrescriptionList.Current.PrescriptionDose;
+Store.At.RxDose.Multiply = TrialList.Current.PrescriptionList.Current.NumberOfFractions;
+Store.At.RxDose.Multiply = 0.01;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.IsoValue = Store.FloatAt.RxDose;
+IsodoseControl.LineList.Last.CopyToRoiList = "Create ROI";
+IsodoseControl.LineList.Last.Destroy = "";
+RoiList.Last.Name = "tempRx";
+
+// Create 50% isodose volume
+Store.FloatAt.HalfRx = Store.FloatAt.RxDose;
+Store.At.HalfRx.Multiply = 0.5;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.IsoValue = Store.FloatAt.HalfRx;
+IsodoseControl.LineList.Last.CopyToRoiList = "Create ROI";
+IsodoseControl.LineList.Last.Destroy = "";
+RoiList.Last.Name = "tempHalfRx";
+
+// Create target/prescription volume intersection
+RoiList.#"*".ResetRoiExpandState = "Clear All";
+RoiList.Current = Store.StringAt.TargetName;		
+RoiList.Current.RoiExpandState = "Source"; 
+RoiExpandControl.CheckTargetRoi = RoiList.Current.Address;
+
+RoiList.Current = RoiList.tempRx.Name;
+RoiList.Current.RoiExpandState = "Avoid Exterior"; 
+RoiExpandControl.CheckTargetRoi = RoiList.Current.Address;
+
+RoiExpandControl.TargetRoiName = "tempIntersection";
+RoiExpandControl.CreateNewTarget = "1";				
+RoiExpandControl.Expand = "1";				
+RoiExpandControl.DoExpand = "Expand";
+
+// Create target - prescription volume
+RoiList.#"*".ResetRoiExpandState = "Clear All";
+RoiList.Current = Store.StringAt.TargetName;		
+RoiList.Current.RoiExpandState = "Source"; 
+RoiExpandControl.CheckTargetRoi = RoiList.Current.Address;
+
+RoiList.Current = RoiList.tempRx.Name;
+RoiList.Current.RoiExpandState = "Avoid Interior"; 
+RoiExpandControl.CheckTargetRoi = RoiList.Current.Address;
+
+RoiExpandControl.TargetRoiName = "tempSubtraction";
+RoiExpandControl.CreateNewTarget = "1";				
+RoiExpandControl.Expand = "1";				
+RoiExpandControl.DoExpand = "Expand";				
+
+// Revert isodose normalization
+IsodoseControl.NormalizationMode = Store.StringAt.CurrentNormalization;
+
+// Update structure statistics
+Store.StringAt.Dose = "Dose -- ";
+Store.At.Dose.AppendString = TrialList.Current.Name;
+RoiList.#"*".StatsVolumeName = Store.StringAt.Dose;
+RoiList.Last.RecomputeStatistics = "Recompute Statistics";
+
+// Calculate prescription coverage and target volume
+RoiList.Current = Store.StringAt.TargetName;
+Store.At.MessageContent.AppendString = "Target Volume\t=  ";
+Store.At.MessageContent.AppendString = RoiList.Current.Volume;
+Store.At.MessageContent.AppendString = " cc\n";
+Store.FloatAt.RxCoverage = RoiList.Current.Volume;
+Store.At.RxCoverage.Subtract = RoiList.tempSubtraction.Volume;
+Store.At.RxCoverage.Divide = RoiList.Current.Volume;
+Store.At.MessageContent.AppendString = "Rx Dose\t\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.RxDose;
+Store.At.MessageContent.AppendString = " Gy\n";
+Store.At.MessageContent.AppendString = "Rx Coverage\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.RxCoverage;
+Store.At.MessageContent.AppendString = "\n";
+
+// Calculate RTOG target coverage
+RoiList.Current = Store.StringAt.TargetName;
+Store.FloatAt.RTOGCoverage = RoiList.Current.Minimum;
+Store.At.RTOGCoverage.Divide = Store.FloatAt.RxDose;
+Store.At.MessageContent.AppendString = "RTOG Coverage\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.RTOGCoverage;
+Store.At.MessageContent.AppendString = "\n";
+
+// Calculate HI
+RoiList.Current = Store.StringAt.TargetName;
+Store.FloatAt.HI = RoiList.Current.Maximum;
+Store.At.HI.Divide = Store.FloatAt.RxDose;
+Store.At.MessageContent.AppendString = "Homog. Index\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.HI;
+Store.At.MessageContent.AppendString = "\n";
+
+// Calculate CI/PITV
+Store.FloatAt.CI_PITV = RoiList.tempRx.Volume;
+RoiList.Current = Store.StringAt.TargetName;
+Store.At.CI_PITV.Divide = RoiList.Current.Volume;
+Store.At.MessageContent.AppendString = "RTOG CI (PITV)\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.CI_PITV;
+Store.At.MessageContent.AppendString = "\n";
+
+// Calculate DGI
+Store.FloatAt.DGI = RoiList.tempHalfRx.Volume;
+Store.At.DGI.Divide = RoiList.tempRx.Volume;
+Store.At.MessageContent.AppendString = "Paddick's DGI\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.DGI;
+Store.At.MessageContent.AppendString = "\n";
+
+// Calculate CI_BS
+Store.FloatAt.CI_BS = RoiList.tempRx.Volume;
+Store.At.CI_BS.Divide = RoiList.tempIntersection.Volume;
+Store.At.MessageContent.AppendString = "CI (BrainSCAN)\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.CI_BS;
+Store.At.MessageContent.AppendString = "\n";
+
+// Calculate NCI
+Store.FloatAt.NCI = RoiList.tempRx.Volume;
+RoiList.Current = Store.StringAt.TargetName;
+Store.At.NCI.Multiply = RoiList.Current.Volume;
+Store.At.NCI.Divide = RoiList.tempIntersection.Volume;
+Store.At.NCI.Divide = RoiList.tempIntersection.Volume;
+Store.At.MessageContent.AppendString = "Nakamura's CI\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.NCI;
+Store.At.MessageContent.AppendString = "\n";
+
+// Calculate LCI
+Store.FloatAt.LCI = RoiList.tempIntersection.Volume;
+Store.At.LCI.Divide = RoiList.tempRx.Volume;
+Store.At.MessageContent.AppendString = "Lomax's CI\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.LCI;
+Store.At.MessageContent.AppendString = "\n";
+
+// Calculate PCI
+Store.FloatAt.PCI = RoiList.tempIntersection.Volume;
+Store.At.PCI.Multiply = RoiList.tempIntersection.Volume;
+RoiList.Current = Store.StringAt.TargetName;
+Store.At.PCI.Divide = RoiList.Current.Volume;
+Store.At.PCI.Divide = RoiList.tempRx.Volume;
+Store.At.MessageContent.AppendString = "Paddick's CI\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.PCI;
+
+// Clean up temporary contours
+RoiList.tempRx.Destroy = "";
+RoiList.tempHalfRx.Destroy = "";
+RoiList.tempSubtraction.Destroy = "";
+RoiList.tempIntersection.Destroy = "";
+
+// Clear temporary variables
+Store.FreeAt.CurrentNormalization = "";
+Store.FreeAt.HalfRx = "";
+Store.FreeAt.RxDose = "";
+Store.FreeAt.TargetName = "";
+Store.FreeAt.RxCoverage = "";
+Store.FreeAt.TargetVolume = "";
+Store.FreeAt.RxCoverage = "";
+Store.FreeAt.RTOGCoverage = "";
+Store.FreeAt.CI_PITV = "";
+Store.FreeAt.CI_BS = "";
+Store.FreeAt.NCI = "";
+Store.FreeAt.LCI = "";
+Store.FreeAt.PCI = "";
+Store.FreeAt.DGI = "";
+Store.FreeAt.HI = "";
+
+// Display the metrics
+InfoMessage = Store.StringAt.MessageContent;
+Store.FreeAt.MessageContent = "";

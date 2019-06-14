@@ -1,0 +1,42 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Add 2 Coplanar Arc VMAT Beam Set
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: August 21, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script adds two coplanar VMAT arcs to the current plan, each full arcs, 
+// at collimator angles 15 and 345.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// Arc1
+
+TrialList.Current.BeamList.Beam = {
+    Name = "Arc1";
+    Machine = "TB2230601";
+    Modality = "Photons";
+    IsGantryStartStopLocked = 0;
+    SetBeamType = "Dynamic Arc";
+    GantryIsCCW = "1";
+    Gantry = 178;
+    GantryStop = 182;
+    Collimator = 15;
+    Couch = 0;
+};
+
+// Arc2
+
+TrialList.Current.BeamList.Beam = {
+    Name = "Arc2";
+    Machine = "TB2230601";
+    Modality = "Photons";
+    IsGantryStartStopLocked = 0;
+    SetBeamType = "Dynamic Arc";
+    GantryIsCCW = "0";
+    Gantry = 184;
+    GantryStop = 176;
+    Collimator = 345;
+    Couch = 0;
+};

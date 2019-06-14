@@ -1,0 +1,186 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Dynamic Conformal Arc Dose Rate Script
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: October 19, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script adds dose rate modulation to a conformal arc plan. In order to 
+// execute, this script requires the plan to contain only conformal arc beams, two 
+// structures named "Target" (PTV or PTVeval) and "Normal" (defined as External - Target), 
+// a prescription set to the full dose, and a dose grid.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// Define adjustable parameters
+Store.FloatAt.MaxIter = 10;              // Max iterations
+Store.FloatAt.DoseIter = 1;              // Convolution dose iteration 
+
+// Optionally allow user to edit inputs
+// IF.AppVersion.LESSTHAN.#"#16.0".THEN={
+//     WindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+//     WindowList.MyStoreEditor.Unrealize = "";
+//     WindowList.MyStoreEditor.IsModal = 1;
+//     WindowList.MyStoreEditor.Create = "";
+//     WindowList.MyStoreEditor.IsModal = 0;
+//     };
+	
+// Pinnacle 16.0 and newer
+// IF.AppVersion.GREATERTHANOREQUALTO.#"#16.0".THEN={
+//     XtWindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+//     XtWindowList.MyStoreEditor.Unrealize = "";
+//     XtWindowList.MyStoreEditor.IsModal = 1;
+//     XtWindowList.MyStoreEditor.Create = "";
+//     XtWindowList.MyStoreEditor.IsModal = 0;
+//     };
+
+// Copy current trial
+CopyCurrentTrial = "Copy Current Trial";
+TrialList.Last.MakeCurrent = "";
+
+// Calculate prescription
+Store.FloatAt.RxDose = TrialList.Current.PrescriptionList.Current.PrescriptionDose;
+Store.FloatAt.TotalDose = Store.FloatAt.RxDose;
+Store.At.TotalDose.Multiply = TrialList.Current.PrescriptionList.Current.NumberOfFractions;
+
+// Store start/end angles
+Store.FloatAt.sa = TrialList.Current.BeamList.#"#0".Gantry;
+Store.FloatAt.ea = TrialList.Current.BeamList.#"#0".GantryStop;
+Store.FloatAt.sb = TrialList.Current.BeamList.#"#1".Gantry;
+Store.FloatAt.eb = TrialList.Current.BeamList.#"#1".GantryStop;
+Store.FloatAt.sc = TrialList.Current.BeamList.#"#2".Gantry;
+Store.FloatAt.ec = TrialList.Current.BeamList.#"#2".GantryStop;
+Store.FloatAt.sd = TrialList.Current.BeamList.#"#3".Gantry;
+Store.FloatAt.ed = TrialList.Current.BeamList.#"#3".GantryStop;
+Store.FloatAt.se = TrialList.Current.BeamList.#"#4".Gantry;
+Store.FloatAt.ee = TrialList.Current.BeamList.#"#4".GantryStop;
+Store.FloatAt.sf = TrialList.Current.BeamList.#"#5".Gantry;
+Store.FloatAt.ef = TrialList.Current.BeamList.#"#5".GantryStop;
+Store.FloatAt.sg = TrialList.Current.BeamList.#"#6".Gantry;
+Store.FloatAt.eg = TrialList.Current.BeamList.#"#6".GantryStop;
+Store.FloatAt.sh = TrialList.Current.BeamList.#"#7".Gantry;
+Store.FloatAt.eh = TrialList.Current.BeamList.#"#7".GantryStop;
+
+// Set beam types 
+TrialList.Current.BeamList.#"#0".SetBeamType = "Dynamic Arc";
+TrialList.Current.BeamList.#"#1".SetBeamType = "Dynamic Arc";
+TrialList.Current.BeamList.#"#2".SetBeamType = "Dynamic Arc";
+TrialList.Current.BeamList.#"#3".SetBeamType = "Dynamic Arc";
+TrialList.Current.BeamList.#"#4".SetBeamType = "Dynamic Arc";
+TrialList.Current.BeamList.#"#5".SetBeamType = "Dynamic Arc";
+TrialList.Current.BeamList.#"#6".SetBeamType = "Dynamic Arc";
+TrialList.Current.BeamList.#"#7".SetBeamType = "Dynamic Arc";
+
+// Set start/end angles back
+TrialList.Current.BeamList.#"#0".Gantry = Store.FloatAt.sa;
+TrialList.Current.BeamList.#"#0".GantryStop = Store.FloatAt.ea;
+TrialList.Current.BeamList.#"#1".Gantry = Store.FloatAt.sb;
+TrialList.Current.BeamList.#"#1".GantryStop = Store.FloatAt.eb;
+TrialList.Current.BeamList.#"#2".Gantry = Store.FloatAt.sc;
+TrialList.Current.BeamList.#"#2".GantryStop = Store.FloatAt.ec;
+TrialList.Current.BeamList.#"#3".Gantry = Store.FloatAt.sd;
+TrialList.Current.BeamList.#"#3".GantryStop = Store.FloatAt.ed;
+TrialList.Current.BeamList.#"#4".Gantry = Store.FloatAt.sr;
+TrialList.Current.BeamList.#"#4".GantryStop = Store.FloatAt.er;
+TrialList.Current.BeamList.#"#5".Gantry = Store.FloatAt.sf;
+TrialList.Current.BeamList.#"#5".GantryStop = Store.FloatAt.ef;
+TrialList.Current.BeamList.#"#6".Gantry = Store.FloatAt.sg;
+TrialList.Current.BeamList.#"#6".GantryStop = Store.FloatAt.eg;
+TrialList.Current.BeamList.#"#7".Gantry = Store.FloatAt.sh;
+TrialList.Current.BeamList.#"#7".GantryStop = Store.FloatAt.eh;
+
+// Go to IMRT panel
+PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine";
+PluginManager.InversePlanningManager.ActiveWindow = WindowList.IMRT.Address;
+
+// Set iterations and stopping tolerance for initial optimization
+PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.MaxIterations = Store.FloatAt.DoseIter;
+PluginManager.InversePlanningManager.TrialList.Current.DoseIteration = Store.FloatAt.DoseIter;
+PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.OptimalityTolerance = "1e-8";
+PluginManager.InversePlanningManager.TrialList.Current.ComputeFinalDose = 1;
+PluginManager.InversePlanningManager.TrialList.Current.FineResolutionODM = 1;
+
+// Add Target uniform dose objective
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#0".ROIName = "Target";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#0" = "Uniform Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#0".Dose = Store.FloatAt.TotalDose;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#0".Weight = 1;
+
+// Add Normal max dose objective
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".ROIName = "Normal";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#1" = "Max Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".Dose = Store.FloatAt.TotalDose;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".Weight = 1;
+
+// Set optimization types 
+TrialList.Current.BeamList.#"#0".IMRTParameterType = "SmartArc";
+TrialList.Current.BeamList.#"#1".IMRTParameterType = "SmartArc";
+TrialList.Current.BeamList.#"#2".IMRTParameterType = "SmartArc";
+TrialList.Current.BeamList.#"#3".IMRTParameterType = "SmartArc";
+TrialList.Current.BeamList.#"#4".IMRTParameterType = "SmartArc";
+TrialList.Current.BeamList.#"#5".IMRTParameterType = "SmartArc";
+TrialList.Current.BeamList.#"#6".IMRTParameterType = "SmartArc";
+TrialList.Current.BeamList.#"#7".IMRTParameterType = "SmartArc";
+
+// Run optimization
+WaitMessage = "Computing dose rates...";
+PluginManager.InversePlanningManager.ResetBeamsForIMRT = "Reset Beams";
+PluginManager.InversePlanningManager.Initialize = "Start Optimization";
+
+// Update iterations and run segment weight
+PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.MaxIterations = Store.FloatAt.MaxIter;
+PluginManager.InversePlanningManager.Initialize = "Start Optimization";
+
+// Set optimization types 
+TrialList.Current.BeamList.#"#0".IMRTParameterType = "Segment Weight";
+TrialList.Current.BeamList.#"#1".IMRTParameterType = "Segment Weight";
+TrialList.Current.BeamList.#"#2".IMRTParameterType = "Segment Weight";
+TrialList.Current.BeamList.#"#3".IMRTParameterType = "Segment Weight";
+TrialList.Current.BeamList.#"#4".IMRTParameterType = "Segment Weight";
+TrialList.Current.BeamList.#"#5".IMRTParameterType = "Segment Weight";
+TrialList.Current.BeamList.#"#6".IMRTParameterType = "Segment Weight";
+TrialList.Current.BeamList.#"#7".IMRTParameterType = "Segment Weight";
+
+// Clean up by removing constraints and IMRT parameters
+TrialList.Current.BeamList.#"#0".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#1".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#2".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#3".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#4".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#5".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#6".IMRTParameterType = "None";
+TrialList.Current.BeamList.#"#7".IMRTParameterType = "None";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+
+// Set prescriptions back
+TrialList.Current.PrescriptionList.#"#0".MethodInt = "0";
+TrialList.Current.PrescriptionList.#"#0".PrescriptionDose = Store.FloatAt.RxDose;
+
+// Clean up
+Store.FreeAt.MaxIter = "";
+Store.FreeAt.DoseIter = "";
+Store.FreeAt.RxDose = "";
+Store.FreeAt.TotalDose = "";
+Store.FreeAt.sa = "";
+Store.FreeAt.ea = "";
+Store.FreeAt.sb = "";
+Store.FreeAt.eb = "";
+Store.FreeAt.sc = "";
+Store.FreeAt.ec = "";
+Store.FreeAt.sd = "";
+Store.FreeAt.ed = "";
+Store.FreeAt.se = "";
+Store.FreeAt.ee = "";
+Store.FreeAt.sf = "";
+Store.FreeAt.ef = "";
+Store.FreeAt.sg = "";
+Store.FreeAt.eg = "";
+Store.FreeAt.sh = "";
+Store.FreeAt.eh = "";
+
+// Notify user
+WarningMessage = "Conformal arc computation completed successfully";

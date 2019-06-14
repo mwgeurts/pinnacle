@@ -22,13 +22,24 @@ Store.FloatAt.MaxIterWS = 50;            // Max iterations for warm starts
 Store.FloatAt.MaxIterSW = 50;            // Max iterations for final segment weight opt
 
 // Optionally allow user to edit inputs
-//WindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
-//WindowList.MyStoreEditor.Unrealize = "";
-//WindowList.MyStoreEditor.IsModal = 1;
-//WindowList.MyStoreEditor.Create = "";
-
-PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine";
-PluginManager.InversePlanningManager.ActiveWindow = WindowList.IMRT.Address;
+IF.AppVersion.LESSTHAN.#"#16.0".THEN={
+    WindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+    WindowList.MyStoreEditor.Unrealize = "";
+    WindowList.MyStoreEditor.IsModal = 1;
+    WindowList.MyStoreEditor.Create = "";
+    WindowList.MyStoreEditor.IsModal = 0;
+    };
+	
+// Pinnacle 16.0 and newer
+IF.AppVersion.GREATERTHANOREQUALTO.#"#16.0".THEN={
+    XtWindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+    XtWindowList.MyStoreEditor.Unrealize = "";
+    XtWindowList.MyStoreEditor.IsModal = 1;
+    XtWindowList.MyStoreEditor.Create = "";
+    XtWindowList.MyStoreEditor.IsModal = 0;
+    };
+	
+PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine"; 
 
 // Set iterations and stopping tolerance for initial optimization
 PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.MaxIterations = Store.FloatAt.MaxIter;

@@ -27,6 +27,7 @@ TrialList.Current.BeamList.Beam = {
 
 TrialList.Current. BeamList.Last.MakeCurrent = "";
 TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+TrialList.Current.BeamList.Current.DoseRate = "1400";
 
 // C50
 
@@ -43,6 +44,7 @@ TrialList.Current.BeamList.Beam = {
 };
 TrialList.Current. BeamList.Last.MakeCurrent = "";
 TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+TrialList.Current.BeamList.Current.DoseRate = "1400";
 
 // C10 
 
@@ -60,6 +62,7 @@ TrialList.Current.BeamList.Beam = {
 
 TrialList.Current. BeamList.Last.MakeCurrent = "";
 TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+TrialList.Current.BeamList.Current.DoseRate = "1400";
 
 // C350
 
@@ -77,6 +80,7 @@ TrialList.Current.BeamList.Beam = {
 
 TrialList.Current. BeamList.Last.MakeCurrent = "";
 TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+TrialList.Current.BeamList.Current.DoseRate = "1400";
 
 // C310
 
@@ -94,3 +98,7 @@ TrialList.Current.BeamList.Beam = {
 
 TrialList.Current. BeamList.Last.MakeCurrent = "";
 TrialList.Current.BeamList.Beam.Color = PoiList.Current.Color;
+TrialList.Current.BeamList.Current.DoseRate = "1400";
+
+// Set even beam weights
+TrialList.Current.WeightEqual = "Set Equal Weights for Unlocked Beams";

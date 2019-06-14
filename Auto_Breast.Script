@@ -21,12 +21,26 @@ Store.FloatAt.MaxSeg = 10;               // Max number of field in field segment
 Store.FloatAt.MinSegArea = 6;            // Minimum segment area
 Store.FloatAt.MinSegMU = 3;              // Minimum segment MU
 Store.FloatAt.FractionOpen = 0.8;        // The fraction of dose that will go through open beam
+Store.FloatAt.NormWeight = 0.05;         // The fraction of dose that will go through open beam
+
 
 // Optionally allow user to edit inputs
-//WindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
-//WindowList.MyStoreEditor.Unrealize = "";
-//WindowList.MyStoreEditor.IsModal = 1;
-//WindowList.MyStoreEditor.Create = "";
+IF.AppVersion.LESSTHAN.#"#16.0".THEN={
+    WindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+    WindowList.MyStoreEditor.Unrealize = "";
+    WindowList.MyStoreEditor.IsModal = 1;
+    WindowList.MyStoreEditor.Create = "";
+    WindowList.MyStoreEditor.IsModal = 0;
+    };
+	
+// Pinnacle 16.0 and newer
+IF.AppVersion.GREATERTHANOREQUALTO.#"#16.0".THEN={
+    XtWindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+    XtWindowList.MyStoreEditor.Unrealize = "";
+    XtWindowList.MyStoreEditor.IsModal = 1;
+    XtWindowList.MyStoreEditor.Create = "";
+    XtWindowList.MyStoreEditor.IsModal = 0;
+    };
 
 // Copy current trial
 CopyCurrentTrial = "Copy Current Trial";
@@ -74,11 +88,8 @@ TrialList.Current.BeamList.#"#3".UseMLC = 0;
 TrialList.Current.BeamList.#"#3".RemoveCurrentModifier = "Delete Current Block";
 TrialList.Current.BeamList.#"#3".UseMLC = 1;
 
-// Go to IMRT panel
-PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine";
-PluginManager.InversePlanningManager.ActiveWindow = WindowList.IMRT.Address;
-
 // Set iterations and stopping tolerance for initial optimization
+PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine";
 PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.MaxIterations = Store.FloatAt.MaxIter;
 PluginManager.InversePlanningManager.TrialList.Current.DoseIteration = Store.FloatAt.DoseIter;
 PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.OptimalityTolerance = "1e-8";
@@ -129,7 +140,7 @@ PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".ROIName = "Norm
 PluginManager.InversePlanningManager.SetObjectiveType.#"#4" = "Max DVH";
 PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".Dose = Store.FloatAt.TotalDose;
 PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".UserPercent = 5;
-PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".Weight = 0.01;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#4".Weight = Store.FloatAt.NormWeight;
 
 // Add OAR max DVH dose objective
 PluginManager.InversePlanningManager.AddObjective = "Add Objective";
@@ -137,7 +148,7 @@ PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".ROIName = "OAR"
 PluginManager.InversePlanningManager.SetObjectiveType.#"#5" = "Max DVH";
 PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".Dose = 500;
 PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".UserPercent = 10;
-PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".Weight = 0.01;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#5".Weight = Store.FloatAt.NormWeight;
 
 // Set optimization types 
 TrialList.Current.BeamList.#"#0".IMRTParameterType = "None";
@@ -185,6 +196,7 @@ Store.FreeAt.MaxSeg = "";
 Store.FreeAt.MinSegArea = "";
 Store.FreeAt.MinSegMU = "";
 Store.FreeAt.FractionOpen = "";
+Store.FreeAt.NormWeight = "";
 Store.FreeAt.FractionFiF = "";
 Store.FreeAt.TargetMax = "";
 Store.FreeAt.TargetMin = "";

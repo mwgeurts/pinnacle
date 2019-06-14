@@ -1,0 +1,128 @@
+//////////////////////////////////////////////////////////////////////////////////////////////
+// 
+// Add Isodose Lines (10%)
+//
+// Author: Mark Geurts, mark.geurts@aspirus.org
+// Date: December 20, 2018
+// Validated: Pinnacle Version 9.8
+//
+// Description: this script adds a series of absolute isodose lines based on the current 
+// prescription. Lineas are added in 10% intervals, ranging from 20-120%.
+//
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+// Store prescription dose
+Store.FloatAt.RxDose = TrialList.Current.PrescriptionList.Current.PrescriptionDose;
+Store.At.RxDose.Multiply = 0.01;
+Store.At.RxDose.Multiply = TrialList.Current.PrescriptionList.Current.NumberOfFractions;
+
+// Destroy Current Isodose Lines
+IsodoseControl.LineList.DestroyAllChildren = "";
+
+// Set Isodose Lines to Absolute
+IsodoseControl.NormalizationMode = "Absolute";
+
+// Add 120%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 1.2;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "red";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 110%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 1.1;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "green";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 100%
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.RxDose;
+IsodoseControl.LineList.Current.Color = "yellow";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 90%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.9;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "blue";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 80%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.8;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "purple";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 70%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.7;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "skyblue";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 60%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.6;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "orange";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 50%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.5;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "slateblue";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 40%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.4;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "lightblue";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 30%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.3;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "lavender";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+// Add 20%
+Store.FloatAt.IDL = Store.FloatAt.RxDose;
+Store.At.IDL.Multiply = 0.2;
+IsodoseControl.LineList.CreateChild = "Add a new isodose line";
+IsodoseControl.LineList.Last.MakeCurrent = "";
+IsodoseControl.LineList.Current.IsoValue = Store.FloatAt.IDL;
+IsodoseControl.LineList.Current.Color = "grey";
+IsodoseControl.LineList.Current.LineWidthString = "Medium";
+
+	
+// Sort isodose lines
+IsodoseControl.LineList.SortBy.D.IsoValue = "Sort";
+
+// Clear temporary variables
+Store.FreeAt.RxDose = "";
+Store.FreeAt.IDL = "";

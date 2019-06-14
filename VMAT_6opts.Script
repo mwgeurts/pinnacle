@@ -6,15 +6,15 @@
 // Date: August 9, 2018
 // Validated: Pinnacle Version 9.8
 //
-// Description: this script runs a cold start followed by two warm starts and a segment weight
-// optimization. The optimization is performed at a coarse resolution (4mm), while the segment 
-// weight and final dose is computed at a finer resolution (2mm). This script is modeled 
-// after the optimization scripts developed by Ed Bender at the University of Wisconsin.
+// Description: this script runs a cold start followed by six warm starts and a segment weight
+// optimization. The optimization, segment weight and final dose are all computed at a fine 
+// resolution (2mm). This script is modeled after the optimization scripts developed by Ed 
+// Bender at the University of Wisconsin.
 //
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 // Define adjustable parameters
-Store.FloatAt.OptimizationRes = 0.4;     // Optimization resolution, in mm
+Store.FloatAt.OptimizationRes = 0.2;     // Optimization resolution, in mm
 Store.FloatAt.SegWeightRes = 0.2;        // Segment weight and final resolution, in mm
 Store.FloatAt.MaxIter = 120;             // Max iterations for cold start
 Store.FloatAt.DoseIter = 60;             // Convolution dose iteration for cold starts
@@ -22,24 +22,24 @@ Store.FloatAt.MaxIterWS = 50;            // Max iterations for warm starts
 Store.FloatAt.MaxIterSW = 50;            // Max iterations for final segment weight opt
 
 // Optionally allow user to edit inputs
-// IF.AppVersion.LESSTHAN.#"#16.0".THEN={
-//     WindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
-//     WindowList.MyStoreEditor.Unrealize = "";
-//     WindowList.MyStoreEditor.IsModal = 1;
-//     WindowList.MyStoreEditor.Create = "";
-//     WindowList.MyStoreEditor.IsModal = 0;
-//     };
+IF.AppVersion.LESSTHAN.#"#16.0".THEN={
+    WindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+    WindowList.MyStoreEditor.Unrealize = "";
+    WindowList.MyStoreEditor.IsModal = 1;
+    WindowList.MyStoreEditor.Create = "";
+    WindowList.MyStoreEditor.IsModal = 0;
+    };
 	
 // Pinnacle 16.0 and newer
-// IF.AppVersion.GREATERTHANOREQUALTO.#"#16.0".THEN={
-//     XtWindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
-//     XtWindowList.MyStoreEditor.Unrealize = "";
-//     XtWindowList.MyStoreEditor.IsModal = 1;
-//     XtWindowList.MyStoreEditor.Create = "";
-//     XtWindowList.MyStoreEditor.IsModal = 0;
-//     };
+IF.AppVersion.GREATERTHANOREQUALTO.#"#16.0".THEN={
+    XtWindowList.MyStoreEditor.CreateStoreEditor = "Store.Address";
+    XtWindowList.MyStoreEditor.Unrealize = "";
+    XtWindowList.MyStoreEditor.IsModal = 1;
+    XtWindowList.MyStoreEditor.Create = "";
+    XtWindowList.MyStoreEditor.IsModal = 0;
+    };
 	
-PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine";  
+PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine"; 
 
 // Set iterations and stopping tolerance for initial optimization
 PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.MaxIterations = Store.FloatAt.MaxIter;
@@ -82,10 +82,22 @@ PluginManager.InversePlanningManager.Initialize = "Start Optimization";
 // Execute warm starts 
 PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.MaxIterations = Store.FloatAt.MaxIterWS;
 
-WaitMessage = "Running 1 of 2 warm start optimizations...";
+WaitMessage = "Running 1 of 6 warm start optimizations...";
 PluginManager.InversePlanningManager.Initialize = "Start Optimization";
 
-WaitMessage = "Running 2 of 2 warm start optimizations...";
+WaitMessage = "Running 2 of 6 warm start optimizations...";
+PluginManager.InversePlanningManager.Initialize = "Start Optimization";
+
+WaitMessage = "Running 3 of 6 warm start optimizations...";
+PluginManager.InversePlanningManager.Initialize = "Start Optimization";
+
+WaitMessage = "Running 4 of 6 warm start optimizations...";
+PluginManager.InversePlanningManager.Initialize = "Start Optimization";
+
+WaitMessage = "Running 5 of 6 warm start optimizations...";
+PluginManager.InversePlanningManager.Initialize = "Start Optimization";
+
+WaitMessage = "Running 6 of 6 warm start optimizations...";
 PluginManager.InversePlanningManager.Initialize = "Start Optimization";
 
 // Switch to segment weight and run final optimization
