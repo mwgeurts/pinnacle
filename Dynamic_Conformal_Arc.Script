@@ -107,12 +107,26 @@ PluginManager.InversePlanningManager.SetObjectiveType.#"#0" = "Uniform Dose";
 PluginManager.InversePlanningManager.CombinedObjectiveList.#"#0".Dose = Store.FloatAt.TotalDose;
 PluginManager.InversePlanningManager.CombinedObjectiveList.#"#0".Weight = 1;
 
-// Add Normal max dose objective
+// Add Target min dose objective
 PluginManager.InversePlanningManager.AddObjective = "Add Objective";
-PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".ROIName = "Normal";
-PluginManager.InversePlanningManager.SetObjectiveType.#"#1" = "Max Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".ROIName = "Target";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#1" = "Min Dose";
 PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".Dose = Store.FloatAt.TotalDose;
 PluginManager.InversePlanningManager.CombinedObjectiveList.#"#1".Weight = 1;
+
+// Add Target max dose objective
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#2".ROIName = "Target";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#2" = "Max Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#2".Dose = Store.FloatAt.TotalDose;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#2".Weight = 1;
+
+// Add Normal max dose objective
+PluginManager.InversePlanningManager.AddObjective = "Add Objective";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#3".ROIName = "Normal";
+PluginManager.InversePlanningManager.SetObjectiveType.#"#3" = "Max Dose";
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#3".Dose = Store.FloatAt.TotalDose;
+PluginManager.InversePlanningManager.CombinedObjectiveList.#"#3".Weight = 5;
 
 // Set optimization types 
 TrialList.Current.BeamList.#"#0".IMRTParameterType = "SmartArc";
@@ -152,6 +166,8 @@ TrialList.Current.BeamList.#"#4".IMRTParameterType = "None";
 TrialList.Current.BeamList.#"#5".IMRTParameterType = "None";
 TrialList.Current.BeamList.#"#6".IMRTParameterType = "None";
 TrialList.Current.BeamList.#"#7".IMRTParameterType = "None";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
+PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
 PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
 PluginManager.InversePlanningManager.DeleteCurrentObjective = "Delete Objective";
 
