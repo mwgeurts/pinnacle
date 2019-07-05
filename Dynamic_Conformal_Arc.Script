@@ -81,8 +81,8 @@ TrialList.Current.BeamList.#"#2".Gantry = Store.FloatAt.sc;
 TrialList.Current.BeamList.#"#2".GantryStop = Store.FloatAt.ec;
 TrialList.Current.BeamList.#"#3".Gantry = Store.FloatAt.sd;
 TrialList.Current.BeamList.#"#3".GantryStop = Store.FloatAt.ed;
-TrialList.Current.BeamList.#"#4".Gantry = Store.FloatAt.sr;
-TrialList.Current.BeamList.#"#4".GantryStop = Store.FloatAt.er;
+TrialList.Current.BeamList.#"#4".Gantry = Store.FloatAt.se;
+TrialList.Current.BeamList.#"#4".GantryStop = Store.FloatAt.ee;
 TrialList.Current.BeamList.#"#5".Gantry = Store.FloatAt.sf;
 TrialList.Current.BeamList.#"#5".GantryStop = Store.FloatAt.ef;
 TrialList.Current.BeamList.#"#6".Gantry = Store.FloatAt.sg;
@@ -92,7 +92,6 @@ TrialList.Current.BeamList.#"#7".GantryStop = Store.FloatAt.eh;
 
 // Go to IMRT panel
 PluginManager.InversePlanningManager.DoseEngineManager.CurrentName = "TPBDoseEngine";
-PluginManager.InversePlanningManager.ActiveWindow = WindowList.IMRT.Address;
 
 // Set iterations and stopping tolerance for initial optimization
 PluginManager.InversePlanningManager.OptimizationManager.Current.TrialList.Current.MaxIterations = Store.FloatAt.DoseIter;
