@@ -155,6 +155,8 @@ TrialList.Current.BeamList.#"#0".IMRTParameterType = "None";
 TrialList.Current.BeamList.#"#1".IMRTParameterType = "None";
 TrialList.Current.BeamList.#"#2".IMRTParameterType = "DMPO";
 TrialList.Current.BeamList.#"#3".IMRTParameterType = "DMPO";
+PluginManager.InversePlanningManager.TrialList.Current.BeamExtensionList.#"#2".SplitBeamIfNecessary = 0;
+PluginManager.InversePlanningManager.TrialList.Current.BeamExtensionList.#"#3".SplitBeamIfNecessary = 0;
 
 // Reset FIF beams
 PluginManager.InversePlanningManager.ResetBeamsForIMRT = "Reset Beams";
