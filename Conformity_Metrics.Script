@@ -140,6 +140,44 @@ Store.At.MessageContent.AppendString = "Paddick's DGI\t=  ";
 Store.At.MessageContent.AppendString = Store.FloatAt.DGI;
 Store.At.MessageContent.AppendString = "\n";
 
+// Calculate Gradient Index (equivalent sphere distance)
+Store.FloatAt.GI = RoiList.tempHalfRx.Volume;
+Store.At.GI.Multiply = 0.75;
+Store.At.GI.Divide = 3.14159;
+Store.At.GI.SquareRoot = "";
+Store.At.GI.SquareRoot = "";
+Store.At.GI.SquareRoot = "";
+Store.At.GI.SquareRoot = "";
+Store.At.GI.SquareRoot = "";
+Store.At.GI.Subtract = 1;
+Store.At.GI.Divide = 3;
+Store.At.GI.Add = 1;
+Store.At.GI.Multiply = Store.FloatAt.GI;
+Store.At.GI.Multiply = Store.FloatAt.GI;
+Store.At.GI.Multiply = Store.FloatAt.GI;
+Store.At.GI.Multiply = Store.FloatAt.GI;
+Store.At.GI.Multiply = Store.FloatAt.GI;
+Store.FloatAt.TS = RoiList.tempRx.Volume;
+Store.At.TS.Multiply = 0.75;
+Store.At.TS.Divide = 3.14159;
+Store.At.TS.SquareRoot = "";
+Store.At.TS.SquareRoot = "";
+Store.At.TS.SquareRoot = "";
+Store.At.TS.SquareRoot = "";
+Store.At.TS.SquareRoot = "";
+Store.At.TS.Subtract = 1;
+Store.At.TS.Divide = 3;
+Store.At.TS.Add = 1;
+Store.At.TS.Multiply = Store.FloatAt.TS;
+Store.At.TS.Multiply = Store.FloatAt.TS;
+Store.At.TS.Multiply = Store.FloatAt.TS;
+Store.At.TS.Multiply = Store.FloatAt.TS;
+Store.At.TS.Multiply = Store.FloatAt.TS;
+Store.At.GI.Subtract = Store.FloatAt.TS;
+Store.At.MessageContent.AppendString = "Gradient Index\t=  ";
+Store.At.MessageContent.AppendString = Store.FloatAt.GI;
+Store.At.MessageContent.AppendString = " cm\n";
+
 // Calculate CI_BS
 Store.FloatAt.CI_BS = RoiList.tempRx.Volume;
 Store.At.CI_BS.Divide = RoiList.tempIntersection.Volume;
@@ -194,6 +232,8 @@ Store.FreeAt.NCI = "";
 Store.FreeAt.LCI = "";
 Store.FreeAt.PCI = "";
 Store.FreeAt.DGI = "";
+Store.FreeAt.GI = "";
+Store.FreeAt.TS = "";
 Store.FreeAt.HI = "";
 
 // Display the metrics
